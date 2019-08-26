@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01-areal</title>
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+
+    <script>
+        let co2PrTime = 109;
+        let timer = prompt("angiv timer");
+
+        function udregning(l, b) {
+            let a = (l * b);
+            if (a == 0) {
+                return (`husk timer skal være et tal. \n prøv igen`);
+            } else if (isNaN(a)) {
+                return (`fejl. \n prøv igen med et tal?`)
+            } else {
+                return (`co2 udledning i kg er ${a} \n vil du lave en ny udregning?`)
+            }
+        }
+
+        let resultat = udregning(co2PrTime, timer);
+
+        confirm(resultat);
+        if (confirm) {
+            location.reload();
+        }
+
+    </script>
+</body>
+
+</html>
