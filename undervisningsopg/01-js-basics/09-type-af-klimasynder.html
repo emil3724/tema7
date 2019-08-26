@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>02-arealtest</title>
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <script>
+        let timer = 5.5;
+        let faktor = 109;
+        let svar = timer * faktor;
+        let resultat;
+        //Hvis svaret er under 100, skal der stå
+        if (svar < 100) {
+            resultat = "du har fløjet under 1 time og udledt mindre end 100 kg i c02";
+        }
+        //Er svaret mellem 100 og 200, skal der stå
+        if (svar >= 100 && svar < 200) {
+            resultat = "du har fløjet halvanden time og udledt mellem 100 og 200 kg i c02";
+        }
+        //Er det større end (eller lig med)  200
+        if (svar >= 200 && svar < 600) {
+            resultat = "du har fløjet 3 timer og udledt mellem 200 og 600 kg i c02";
+        }
+        //Er det større end (eller lig med)  600
+        if (svar >= 600) {
+            resultat = "du har fløjet over 6 timer og udledt over 600 kg i c02";
+        }
+
+        console.log(resultat);
+    </script>
+</body></html>
