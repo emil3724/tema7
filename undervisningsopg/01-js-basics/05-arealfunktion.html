@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01-areal</title>
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <p>Hvad er længden?</p>
+    <input typen="text" id="længde">
+    <p>Hvad er bredden?</p>
+    <input typen="text" id="bredde">
+    <button>udregn areal og kig i console.log</button>
+
+    <script>
+        let længde = prompt("angiv længde");
+        let bredde = prompt("angiv bredde");
+
+        function areal(l, b) {
+            let a = (l * b);
+            if (a == 0) {
+                return (`ugyldigt tal \n prøv igen`);
+            } else if (isNaN(a)) {
+                return (`fejl. \n prøv igen med et tal?`)
+            } else {
+                return (`arealet er ${a} \n vil du lave et nyt areal?`)
+            }
+        }
+
+        let resultat = areal(længde, bredde);
+
+        confirm(resultat);
+        if (confirm) {
+            location.reload();
+        }
+    </script>
+</body></html>
