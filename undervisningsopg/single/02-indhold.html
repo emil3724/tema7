@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Filtrering</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .nav {}
+
+        .template {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #liste img {
+            width: 100%;
+        }
+
+        #liste {
+            display: grid;
+            grid-gap: 10px;
+            grid-template-columns: repeat(1, 2fr);
+        }
+
+        article {
+            border: 2px solid black;
+            border-style: dotted;
+        }
+
+        article:nth-child(odd) {
+            background-color: white;
+        }
+
+        article:nth-child(even) {
+            background-color: white;
+        }
+
+
+
+        @media screen and (min-width: 800px) {
+            #liste {
+                grid-template-columns: repeat(2, 2fr);
+            }
+
+
+        }
+
+        @media screen and (min-width: 1100px) {
+            #liste {
+                grid-template-columns: repeat(3, 2fr);
+            }
+
+
+        }
+
+        .filter {
+            background-color: white;
+            border-color: black;
+            text-align: center;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 10px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+
+        .valgt {
+            background-color: black;
+            color: white;
+        }
+
+        #popup {
+            position: fixed;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: grey;
+        }
+
+        .indhold {
+            width: 70vw;
+            min-height: 50vh;
+            background: #fff;
+            margin: 4rem auto;
+            padding: 10px;
+        }
+
+        .luk {
+            position: fixed;
+            right: 0;
+            font-size: 2rem;
+        }
+
+    </style>
+</head>
+
+
+<body>
+    <h1>Alle</h1>
+    <nav>
+        <button class="filter" data-køn="alle" data-hold="alle">Alle</button>
+        <button class="filter" data-køn="m" data-hold="alle">Mænd</button>
+        <button class="filter" data-køn="k" data-hold="alle">Kvinder</button>
+        <button class="filter" data-køn="andet" data-hold="alle">Andet</button>
+        <button class="filter" data-køn="m" data-hold="a">Mænd på hold A</button>
+        <button class="filter" data-køn="m" data-hold="b">Mænd på hold B</button>
+        <button class="filter" data-køn="k" data-hold="a">Kvinder på hold B</button>
+        <button class="filter" data-køn="k" data-hold="b">Kvinder på hold B</button>
+    </nav>
+    <template>
+        <div id="popup">
+            <button class="luk">X</button>
+            <section class="indhold">
+                <article class="enkeltPerson">
+                    <h2></h2>
+                    <img class="billede" src="" alt="">
+                    <p>Github: <a class="github" href=""></a></p>
+                </article>
+            </section>
+        </div>
+
+        <article>
+            <h2></h2>
+            <img src="" alt="">
+            <a href="" id="cap"></a>
+        </article>
+    </template>
+    <section id="liste"></section>
+    <script>
+        let personer;
+        let filterKøn = "alle";
+        let filterHold = "alle";
+        document.addEventListener("DOMContentLoaded", getJson);
+
+        async function getJson() {
+            let jsonData = await fetch("https://spreadsheets.google.com/feeds/list/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/od6/public/values?alt=json");
+            console.log("jsonData", jsonData);
+            personer = await jsonData.json();
+            start();
+            addEventListenersToButtons();
+        }
+
+        function start() {
+            const dest = document.querySelector("#liste");
+            const temp = document.querySelector("template");
+            dest.innerHTML = "";
+
+            personer.feed.entry.forEach((person) => {
+                if ((filterKøn == "alle" || filterKøn == person.gsx$køn.$t) && (filterHold == "alle" || filterHold == person.gsx$hold.$t)) {
+                    const klon = temp.cloneNode(true).content;
+                    klon.querySelector("h2").textContent = person.gsx$navn.$t;
+                    klon.querySelector("img").src = person.gsx$billede.$t;
+                    klon.querySelector("#cap").textContent = person.gsx$github.$t;
+                    dest.appendChild(klon);
+                }
+            })
+        }
+
+        function addEventListenersToButtons() {
+            document.querySelectorAll(".filter").forEach(elm => {
+                elm.addEventListener("click", filtrering);
+            })
+        }
+
+        function filtrering() {
+            filterKøn = this.dataset.køn;
+            filterHold = this.dataset.hold;
+            document.querySelector("h1").textContent = this.textContent;
+            document.querySelectorAll(".filter").forEach(elm => {
+                elm.classList.remove("valgt");
+            })
+            this.classList.add("valgt");
+            start();
+        }
+
+    </script>
+</body>
+
+</html>
