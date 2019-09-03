@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>single view</title>
+    <link rel="stylesheet" href="">
+</head>
+<style>
+    .luk {
+        position: fixed;
+        right: 0;
+        font-size: 2rem;
+
+</style>
+
+<body>
+    <main id="single">
+        <button class="luk">Tilbage</button>
+        <section class="indhold">
+            <article class="enkeltPerson">
+                <h2></h2>
+                <img class="billede" src="" alt="">
+                <p>Github: <a class="github" href=""></a></p>
+                <p class="historie">Historie:</p>
+            </article>
+        </section>
+    </main>
+
+    <script>
+        let urlParams = new URLSearchParams(window.location.search);
+        let github = urlParams.get("github");
+        let personer;
+        document.addEventListener("DOMContentLoaded", getJson);
+
+        async function getJson() {
+            let jsonData = await fetch("https://spreadsheets.google.com/feeds/list/1Xge7slZ9dEOTCn1Yxl3OE4xgvrXOL8Y_iu3WN1yGB1U/od6/public/values?alt=json");
+            personer = await jsonData.json();
+            start();
+        }
+
+        function start() {
+            personer.feed.entry.forEach(person => {
+                if (person.gsx$github.$t == github) {
+                    document.querySelector("h2").textContent = person.gsx$navn.$t;
+                    document.querySelector(".billede").src = person.gsx$billede.$t;
+                    document.querySelector(".billede").alt = person.gsx$navn.$t;
+                    document.querySelector(".github").href = `http://github.com/${person.gsx$navn.$t}`;
+                    document.querySelector(".github").textContent = person.gsx$navn.$t;
+                    document.querySelector(".historie").textContent = person.gsx$historie.$t;
+                }
+            })
+        }
+
+        document.querySelector(".luk").addEventListener("click", () => {
+            history.back();
+        })
+
+    </script>
+</body>
+
+</html>
