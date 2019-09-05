@@ -2,11 +2,26 @@
 <html>
 
 <head>
-    <title>Filtrering</title>
+    <title>babushka</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        .nav {}
+        nav {
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+        }
 
         .template {
             display: flex;
@@ -24,16 +39,21 @@
         }
 
         article {
-            border: 2px solid black;
-            border-style: dotted;
+            cursor: pointer;
+            margin-top: 20px;
+            border-style: solid;
+            border-width: thin;
+
         }
 
         article:nth-child(odd) {
             background-color: white;
+            padding: 10px;
         }
 
         article:nth-child(even) {
-            background-color: gray;
+            background-color: white;
+            padding: 10px;
         }
 
 
@@ -53,7 +73,11 @@
 
         }
 
-        .filter {
+        .img {
+            max-width: 100%;
+        }
+
+        .button {
             background-color: white;
             border-color: black;
             text-align: center;
@@ -62,18 +86,48 @@
             margin-bottom: 10px;
             margin-left: 10px;
             margin-bottom: 10px;
+            padding: 12px 28px;
         }
 
         .valgt {
             background-color: black;
             color: white;
         }
+
+        #popup {
+            position: fixed;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: none;
+            display: none;
+            overflow: scroll;
+        }
+
+        .indhold {
+            width: 70vw;
+            min-height: 50vh;
+            background: none;
+            margin: 4rem auto;
+            padding: 10px;
+        }
+
+        .luk {
+            position: fixed;
+            right: 0;
+            /*font-size: 2rem;*/
+        }
+
+        .billede {
+            width: 100%;
+        }
     </style>
 </head>
 
 
 <body>
-    <h1>Alle</h1>
+    <h1>Bistro Babushka</h1>
+    <h2>Menu</h2>
     <nav>
         <button class="filter" data-kategori="alle">Menu</button>
         <button class="filter" data-kategori="forretter">Forretter</button>
@@ -81,11 +135,23 @@
         <button class="filter" data-kategori="desserter">Desserter</button>
         <button class="filter" data-kategori="drikkevarer">Drikkevarer</button>
     </nav>
+    <div id="popup">
+        <button class="luk">X</button>
+        <section class="indhold">
+            <article class="enkeltRet">
+                <h2></h2>
+                <img class="billede" src="" alt="">
+                <p class="lang"></p>
+            </article>
+        </section>
+    </div>
     <template>
         <article>
             <img src="" alt="">
             <h2></h2>
-            <p></p>
+            <p> <span class="kort"></span></p>
+            <p>Pris: <span class="pris"></span></p>
+            <p>Oprindelse: <span class="oprindelse"></span></p>
         </article>
     </template>
 
@@ -111,13 +177,30 @@
             menu.feed.entry.forEach((ret) => {
                 if ((filterKategori == "alle" || filterKategori == ret.gsx$kategori.$t)) {
                     const klon = temp.cloneNode(true).content;
-                    klon.querySelector("img").src = ret.gsx$billede.$t;
+                    klon.querySelector("img").src = `img/small/${ret.gsx$billede.$t}-sm.jpg`;
                     klon.querySelector("h2").textContent = ret.gsx$navn.$t;
-                    klon.querySelector("p").textContent = ret.gsx$kort.$t;
-                    klon.querySelector("p").textContent = ret.gsx$pris.$t;
+                    klon.querySelector(".kort").textContent = ret.gsx$kort.$t;
+                    klon.querySelector(".pris").textContent = ret.gsx$pris.$t;
+                    klon.querySelector(".oprindelse").textContent = ret.gsx$oprindelse.$t;
+
                     dest.appendChild(klon)
+                    dest.lastElementChild.addEventListener("click", () => {
+                        visRet(ret)
+                    });
                 }
             })
+        }
+
+        function visRet(ret) {
+            document.querySelector("#popup").style.display = "block";
+            document.querySelector("#popup .luk").addEventListener("click", lukSingle);
+            document.querySelector(".enkeltRet h2").textContent = ret.gsx$navn.$t;
+            document.querySelector("img").src = `img/small/${ret.gsx$billede.$t}-sm.jpg`;
+            document.querySelector(".enkeltRet .lang").textContent = ret.gsx$lang.$t;
+        }
+
+        function lukSingle(ret) {
+            document.querySelector("#popup").style.display = "none";
         }
 
         function addEventListenersToButtons() {
@@ -128,7 +211,7 @@
 
         function filtrering() {
             filterKategori = this.dataset.kategori;
-            document.querySelector("h1").textContent = this.textContent;
+            document.querySelector("h2").textContent = this.textContent;
             document.querySelectorAll(".filter").forEach(elm => {
                 elm.classList.remove("valgt");
             })
